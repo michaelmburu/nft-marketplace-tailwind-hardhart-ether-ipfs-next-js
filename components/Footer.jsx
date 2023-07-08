@@ -34,9 +34,7 @@ const Footer = () => {
               alt='logo'
             />
             <p
-              className={`${
-                theme === 'light' ? 'text-nft-black-1' : 'text-white'
-              } font-semibold text-lg ml-1`}
+              className={` dark:'text-white' 'text-nft-black-1' font-semibold text-lg ml-1`}
             >
               SoulsCity
             </p>
