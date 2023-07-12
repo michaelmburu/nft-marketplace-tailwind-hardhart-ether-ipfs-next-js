@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
-import { Banner, CreatorCard } from '../components'
+import { Banner, CreatorCard, NFTCard } from '../components'
 import { makeId } from '../utils/makeId'
 import images from '../assets'
 import Image from 'next/image'
 import { useTheme } from 'next-themes'
-
 
 const Home = () => {
   const [hideButtons, setHideButtons] = useState(false)
@@ -38,13 +37,13 @@ const Home = () => {
 
   useEffect(() => {
     isScrollable()
-    
+
     window.addEventListener('resize', isScrollable)
 
     return () => {
       window.removeEventListener('resize', isScrollable)
     }
-  },)
+  })
 
   return (
     <div className='flex justify-center sm:px-4v p-12'>
@@ -101,6 +100,31 @@ const Home = () => {
                 </>
               )}
             </div>
+          </div>
+        </div>
+
+        <div className='mt-10 '>
+          <div className='flexBetween mx-4 xs:mx-0 minlg:mx-8 sm:flex-col sm:items-start'>
+            <h1 className='flex-1 before:first:font-poppins dark:text-white text-nft-black-1 text-2xl minlg:text-4xl font-semibold sm:mb-4'>
+              Hot Bids
+            </h1>
+            <div>Search Bar</div>
+          </div>
+
+          <div className='mt-3 w-full flex flex-wrap justify-start md:justify-center'>
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
+              <NFTCard
+                key={`nft-${i}`}
+                nft={{
+                  i: i,
+                  name: `Nifty NFT ${i}`,
+                  price: (10 - i * 0.534).toFixed(2),
+                  seller: `0x${makeId(3)}...${makeId(4)}`,
+                  owner: `0x${makeId(3)}...${makeId(4)}`,
+                  description: 'Cool NFT On Sale',
+                }}
+              />
+            ))}
           </div>
         </div>
       </div>
