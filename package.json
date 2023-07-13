@@ -9,11 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^3.0.0",
     "@nomiclabs/hardhat-ethers": "^2.2.3",
     "@nomiclabs/hardhat-waffle": "^2.0.6",
     "@openzeppelin/contracts": "^4.9.2",
     "axios": "^1.4.0",
-    "ethers": "^5.7.2",
+    "ethers": "^6.6.3",
     "hardhat": "^2.16.1",
     "ipfs-http-client": "^60.0.1",
     "next": "13.4.8",
