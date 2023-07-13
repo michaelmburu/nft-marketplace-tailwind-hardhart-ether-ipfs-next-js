@@ -2,13 +2,17 @@ import { useTheme } from 'next-themes'
 import { useRouter } from 'next/router'
 import { useCallback, useContext, useMemo, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
-import { Button } from '../components'
+import { Button, Input } from '../components'
 import images from '../assets'
 import Image from 'next/image'
 const CreateNFT = () => {
   const { theme } = useTheme()
   const [fileUrl, setFileUrl] = useState(null)
-
+  const [formInput, setFormInput] = useState({
+    price: '',
+    name: '',
+    description: '',
+  })
   const onDrop = useCallback(() => {
     //upload image to the ipfs
   }, [])
@@ -79,6 +83,37 @@ const CreateNFT = () => {
               </aside>
             )}
           </div>
+        </div>
+        <Input
+          inputType='input'
+          title='Name'
+          placeholder='NFT Name'
+          handleClick={(e) =>
+            setFormInput({ ...formInput, name: e.target.value })
+          }
+        />
+        <Input
+          inputType='textarea'
+          title='Description'
+          placeholder='NFT Description'
+          handleClick={(e) =>
+            setFormInput({ ...formInput, description: e.target.value })
+          }
+        />
+        <Input
+          inputType='number'
+          title='Price'
+          placeholder='NFT Price'
+          handleClick={(e) =>
+            setFormInput({ ...formInput, price: e.target.value })
+          }
+        />
+        <div className='mt-7 w-full flex justify-end'>
+          <Button
+            btnName='Create NFT'
+            className='rounded-xl'
+            handleClick={() => {}}
+          />
         </div>
       </div>
     </div>

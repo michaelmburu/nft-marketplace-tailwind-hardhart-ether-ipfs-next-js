@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Banner, CreatorCard, NFTCard } from '../components'
+import { Banner, CreatorCard, NFTCard} from '../components'
 import { makeId } from '../utils/makeId'
 import images from '../assets'
 import Image from 'next/image'
