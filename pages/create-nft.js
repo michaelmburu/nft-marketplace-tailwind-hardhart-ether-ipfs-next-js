@@ -1,10 +1,12 @@
 import { useTheme } from 'next-themes'
-import { useRouter } from 'next/router'
 import { useCallback, useContext, useMemo, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { Button, Input } from '../components'
 import images from '../assets'
 import Image from 'next/image'
+import { NFTContext } from '../context/NFTContext'
+import { useRouter } from 'next/router'
+
 const CreateNFT = () => {
   const { theme } = useTheme()
   const [fileUrl, setFileUrl] = useState(null)
@@ -13,8 +15,14 @@ const CreateNFT = () => {
     name: '',
     description: '',
   })
-  const onDrop = useCallback(() => {
+
+  const { uploadToIPFS } = useContext(NFTContext)
+
+  const onDrop = useCallback(async (acceptedFile) => {
     //upload image to the ipfs
+    const url = await uploadToIPFS(acceptedFile)
+
+    setFileUrl(url)
   }, [])
 
   const {
@@ -35,13 +43,12 @@ const CreateNFT = () => {
 
     ${isDragReject && 'border-file-reject'}
     `,
-    []
+    [isDragActive, isDragAccept, isDragReject]
   )
 
   return (
     <div className='flex justify-center sm:px-4 p-12'>
-      <div className='w-3/5 md:w-full '>
-        {' '}
+      <div className='w-3/5 md:w-full'>
         <h1 className='font-poppins dark:text-white text-nft-black-1 text-2xl minlg:text-4xl font-semibold ml-4 xs:ml-0'>
           Create New NFT
         </h1>
@@ -53,7 +60,6 @@ const CreateNFT = () => {
             <div {...getRootProps()} className={fileStyle}>
               <input {...getInputProps()} />
               <div className='flexCenter flex-col text-center'>
-                {' '}
                 <p className='font-poppins dark:text-white text-nft-black-1 font-semibold text-xl'>
                   JPG, PNG, GIF, SVG, WEBM. Max Size 100Mb
                 </p>
