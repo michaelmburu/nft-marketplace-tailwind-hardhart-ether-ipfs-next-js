@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { NFTContext } from '../context/NFTContext'
 import { useRouter } from 'next/router'
 
+
 const CreateNFT = () => {
   const { theme } = useTheme()
   const [fileUrl, setFileUrl] = useState(null)
@@ -20,8 +21,8 @@ const CreateNFT = () => {
 
   const onDrop = useCallback(async (acceptedFile) => {
     //upload image to the ipfs
-    const url = await uploadToIPFS(acceptedFile)
-
+    const url = await uploadToIPFS(acceptedFile[0])
+    console.log(url)
     setFileUrl(url)
   }, [])
 
