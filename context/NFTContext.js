@@ -5,8 +5,15 @@ import Web3Modal from 'web3modal'
 import { NFTMarketplaceAddress, NFTMarketplaceAddressABI } from './constants'
 import { create as ipfsHttpClient } from 'ipfs-http-client'
 
-const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
-
+const API_KEY = process.env.NEXT_PUBLIC_INFURA_IPFS_API_KEY
+const API_SECRET = process.env.NEXT_PUBLIC_INFURA_IPFS_API_SECRET
+const auth = 'Basic ' + btoa(API_KEY + ':' + API_SECRET)
+const client = ipfsHttpClient({
+  url: 'https://ipfs.infura.io:5001/api/v0',
+  headers: {
+    authorization: auth,
+  },
+})
 export const NFTContext = React.createContext()
 
 export const NFTProvider = ({ children }) => {
@@ -20,7 +27,6 @@ export const NFTProvider = ({ children }) => {
   const checkIfWalletIsConnected = async () => {
     //Does user have metamask installed
     if (!window.ethereum) return alert('Please Install MetaMask')
-
     const accounts = await window.ethereum.request({ method: 'eth_accounts' })
 
     if (accounts.length) {
@@ -42,8 +48,10 @@ export const NFTProvider = ({ children }) => {
 
   const uploadToIPFS = async (file) => {
     try {
-      const fileAdded = client.add({ content: file })
+      debugger
+      const fileAdded = await client.add({ content: file })
       const url = `https://ipfs.infura.io/ipfs/${fileAdded.path}`
+      debugger
       return url
     } catch (error) {
       console.log('Error uploading file to IPFS')

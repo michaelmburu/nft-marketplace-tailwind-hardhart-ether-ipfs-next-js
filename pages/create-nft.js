@@ -5,7 +5,6 @@ import { Button, Input } from '../components'
 import images from '../assets'
 import Image from 'next/image'
 import { NFTContext } from '../context/NFTContext'
-import { useRouter } from 'next/router'
 
 
 const CreateNFT = () => {
@@ -22,6 +21,7 @@ const CreateNFT = () => {
   const onDrop = useCallback(async (acceptedFile) => {
     //upload image to the ipfs
     const url = await uploadToIPFS(acceptedFile[0])
+    debugger
     console.log(url)
     setFileUrl(url)
   }, [])
