@@ -1,7 +1,5 @@
-import axios from 'axios'
 import { ethers } from 'ethers'
 import React, { useState, useEffect } from 'react'
-import Web3Modal from 'web3modal'
 import { NFTMarketplaceAddress, NFTMarketplaceAddressABI } from './constants'
 import { create as ipfsHttpClient } from 'ipfs-http-client'
 
@@ -14,6 +12,7 @@ const client = ipfsHttpClient({
     authorization: auth,
   },
 })
+
 export const NFTContext = React.createContext()
 
 export const NFTProvider = ({ children }) => {
@@ -48,19 +47,66 @@ export const NFTProvider = ({ children }) => {
 
   const uploadToIPFS = async (file) => {
     try {
-      debugger
       const fileAdded = await client.add({ content: file })
       const url = `https://cloudflare-ipfs.com/ipfs/${fileAdded.path}`
-      debugger
       return url
     } catch (error) {
       console.log('Error uploading file to IPFS')
     }
   }
 
+  const createNFT = async (formInput, fileUrl, router) => {
+    debugger
+    const { name, description, price } = formInput
+    if (!name || !description || !price || !fileUrl) return
+    const data = JSON.stringify({ name, description, image: fileUrl })
+
+    try {
+      const added = await client.add(data)
+      console.log(1)
+      const url = `https://cloudflare-ipfs.com/ipfs/${added.path}`
+      console.log(2)
+      await createSale(url, price)
+      console.log(3)
+      router.push('/')
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const createSale = async (url, formInputPrice, isReselling, id) => {
+    debugger
+    const provider = new ethers.BrowserProvider(window.ethereum)
+    const signer = await provider.getSigner()
+    const price = ethers.parseEther(formInputPrice)
+    const contract = new ethers.Contract(
+      NFTMarketplaceAddress,
+      NFTMarketplaceAddressABI,
+      signer
+    )
+    const listingPrice = await contract.getListingPrice()
+
+    console.log(listingPrice)
+
+    debugger
+    const transaction = await contract.createToken(url, price, {
+      value: listingPrice.toString(),
+    })
+
+    await transaction.wait()
+    debugger
+    console.log(transaction)
+  }
+
   return (
     <NFTContext.Provider
-      value={{ nftCurrency, connectWallet, currentAccount, uploadToIPFS }}
+      value={{
+        nftCurrency,
+        connectWallet,
+        currentAccount,
+        uploadToIPFS,
+        createNFT,
+      }}
     >
       {children}
     </NFTContext.Provider>
