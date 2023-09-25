@@ -50,7 +50,7 @@ export const NFTProvider = ({ children }) => {
     try {
       debugger
       const fileAdded = await client.add({ content: file })
-      const url = `https://ipfs.infura.io/ipfs/${fileAdded.path}`
+      const url = `https://cloudflare-ipfs.com/ipfs/${fileAdded.path}`
       debugger
       return url
     } catch (error) {

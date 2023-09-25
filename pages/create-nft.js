@@ -23,6 +23,7 @@ const CreateNFT = () => {
     const url = await uploadToIPFS(acceptedFile[0])
     debugger
     console.log(url)
+    debugger
     setFileUrl(url)
   }, [])
 
@@ -85,7 +86,7 @@ const CreateNFT = () => {
             {fileUrl && (
               <aside>
                 <div>
-                  <img src={fileUrl} alt='asset_file' />
+                  <Image src={fileUrl} width={200} height={250} alt='asset_file' />
                 </div>
               </aside>
             )}
