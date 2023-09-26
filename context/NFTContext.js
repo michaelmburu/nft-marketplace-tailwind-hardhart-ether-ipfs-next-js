@@ -2,6 +2,7 @@ import { ethers } from 'ethers'
 import React, { useState, useEffect } from 'react'
 import { NFTMarketplaceAddress, NFTMarketplaceAddressABI } from './constants'
 import { create as ipfsHttpClient } from 'ipfs-http-client'
+import axios from 'axios'
 
 const API_KEY = process.env.NEXT_PUBLIC_INFURA_IPFS_API_KEY
 const API_SECRET = process.env.NEXT_PUBLIC_INFURA_IPFS_API_SECRET
@@ -48,7 +49,7 @@ export const NFTProvider = ({ children }) => {
   const uploadToIPFS = async (file) => {
     try {
       const fileAdded = await client.add({ content: file })
-      const url = `https://cloudflare-ipfs.com/ipfs/${fileAdded.path}`
+      const url = `https://mykeadam.infura-ipfs.io/ipfs/${fileAdded.path}`
       return url
     } catch (error) {
       console.log('Error uploading file to IPFS')
@@ -63,15 +64,54 @@ export const NFTProvider = ({ children }) => {
 
     try {
       const added = await client.add(data)
-      console.log(1)
-      const url = `https://cloudflare-ipfs.com/ipfs/${added.path}`
-      console.log(2)
+   
+      const url = `https://mykeadam.infura-ipfs.io/ipfs/${added.path}`
+
       await createSale(url, price)
-      console.log(3)
+
       router.push('/')
     } catch (error) {
       console.log(error)
     }
+  }
+
+  const fetchNFTs = async () => {
+    const provider = new ethers.JsonRpcProvider()
+    const contract = new ethers.Contract(
+      NFTMarketplaceAddress,
+      NFTMarketplaceAddressABI,
+      provider
+    )
+    
+    debugger
+    const data = await contract.fetchMarketItems()
+    
+    debugger
+    console.log(data)
+
+    const items = await Promise.all(
+      data.map(async ({ tokenId, seller, owner, price: unformattedPrice }) => {
+        const tokenURI = await contract.tokenURI(tokenId)
+        const {
+          data: { image, name, description }
+        } = await axios.get(tokenURI)
+
+        const price = ethers.parseUnits(unformattedPrice.toString(), 'ether')
+
+        return {
+          price,
+          tokenId: tokenId.toNumber(),
+          seller,
+          owner,
+          image,
+          name,
+          description,
+          tokenURI,
+        }
+      })
+    )
+    console.log(data)
+    return items
   }
 
   const createSale = async (url, formInputPrice, isReselling, id) => {
@@ -106,6 +146,7 @@ export const NFTProvider = ({ children }) => {
         currentAccount,
         uploadToIPFS,
         createNFT,
+        fetchNFTs,
       }}
     >
       {children}

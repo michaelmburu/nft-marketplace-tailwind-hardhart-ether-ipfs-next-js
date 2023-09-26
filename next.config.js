@@ -3,7 +3,7 @@ const nextConfig = {
   reactStrictMode: true,
 
   images: {
-    domains: ['cloudflare-ipfs.com'], // Add the external hostname(s) here
+    domains: ['mykeadam.infura-ipfs.io'], // Add the external hostname(s) here
   },
 }
 
